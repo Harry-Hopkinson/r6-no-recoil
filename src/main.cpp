@@ -1,9 +1,18 @@
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <thread>
 #include <chrono>
 
 #include "../include/RecoilPresets.hpp"
+#include "../include/UI.hpp"
+
+// Function to center text
+void DrawCenteredText(HDC hdc, LPCSTR text, int yOffset, int windowWidth)
+{
+    SIZE textSize;
+    GetTextExtentPoint32(hdc, text, strlen(text), &textSize);
+    int textX = (windowWidth - textSize.cx) / 2;
+    TextOut(hdc, textX, yOffset, text, strlen(text));
+}
 
 // Window Procedure for handling events
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -15,25 +24,27 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             PostQuitMessage(0);
             break;
 
-        case WM_KEYDOWN:
-            if (wParam == VK_RETURN)
+        case WM_COMMAND:
+            if (LOWORD(wParam) == 1) // Toggle Recoil Button
             {
                 EnableRC = !EnableRC;
-                InvalidateRect(hwnd, NULL, TRUE); // Request repaint
+                InvalidateRect(hwnd, NULL, TRUE);
             }
-            if (wParam == VK_UP)
+            else if (LOWORD(wParam) == 2) // Change Mode Button
             {
                 SelectedMode = (SelectedMode + 1) % 4;
                 CurrentRecoil = RecoilPresets[SelectedMode];
                 InvalidateRect(hwnd, NULL, TRUE);
             }
-            if (wParam == VK_DOWN)
-            {
-                SelectedMode = (SelectedMode - 1 + 4) % 4;
-                CurrentRecoil = RecoilPresets[SelectedMode];
-                InvalidateRect(hwnd, NULL, TRUE);
-            }
             break;
+
+        case WM_CREATE:
+        {
+            int centerX = (WINDOW_WIDTH - 150) / 2; // Center buttons horizontally
+            buttons.emplace_back(hwnd, centerX, 200, 150, 40, "Toggle Recoil", 1);
+            buttons.emplace_back(hwnd, centerX, 250, 150, 40, "Change Mode", 2);
+        }
+        break;
 
         case WM_PAINT:
         {
@@ -43,32 +54,22 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             // Get window size
             RECT rect;
             GetClientRect(hwnd, &rect);
-            int centerX = rect.right / 2; // Center of the window
 
-            // Create a black background
+            // Set background to black
             HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
             FillRect(hdc, &rect, hBrush);
             DeleteObject(hBrush);
 
-            // Set text properties
-            SetTextColor(hdc, RGB(255, 255, 255)); // White text
+            // Set text color to white
+            SetTextColor(hdc, RGB(255, 255, 255));
             SetBkMode(hdc, TRANSPARENT);
 
-            auto DrawCenteredText = [&](LPCSTR text, int yOffset)
-            {
-                SIZE textSize;
-                GetTextExtentPoint32(hdc, text, strlen(text), &textSize);
-                int textX = centerX - (textSize.cx / 2);
-                TextOut(hdc, textX, yOffset, text, strlen(text));
-            };
-
-            DrawCenteredText("Recoil Control", 20);
-            DrawCenteredText("Enable:", 80);
-            DrawCenteredText(EnableRC ? "ON" : "OFF", 100);
-            DrawCenteredText("Mode:", 130);
-            DrawCenteredText(Modes[SelectedMode], 150);
-            DrawCenteredText("[ENTER] Toggle On/Off", 200);
-            DrawCenteredText("[UP/DOWN] Change Mode", 230);
+            // Draw centered text
+            DrawCenteredText(hdc, "Recoil Control", 50, rect.right);
+            DrawCenteredText(hdc, "Enable:", 100, rect.right);
+            DrawCenteredText(hdc, EnableRC ? "ON" : "OFF", 120, rect.right);
+            DrawCenteredText(hdc, "Mode:", 150, rect.right);
+            DrawCenteredText(hdc, Modes[SelectedMode], 170, rect.right);
 
             EndPaint(hwnd, &ps);
         }
@@ -89,7 +90,6 @@ void ApplyRecoil()
             while (GetAsyncKeyState(VK_LBUTTON) & 0x8000) // Left Mouse Button (Firing)
             {
                 mouse_event(MOUSEEVENTF_MOVE, CurrentRecoil.Horizontal * 2, CurrentRecoil.Vertical * 2, 0, 0);
-
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
             }
         }
@@ -104,11 +104,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = "NoRecoilWindow";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1); // Background set in WM_PAINT
     RegisterClass(&wc);
 
     // Create Window
-    HWND hwnd = CreateWindowEx(0, "NoRecoilWindow", "R6 No Recoil", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, nullptr, nullptr, hInstance, nullptr);
+    HWND hwnd = CreateWindowEx(0, "NoRecoilWindow", "R6 No Recoil", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, WINDOW_WIDTH, WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);
     if (!hwnd) return 0;
 
     ShowWindow(hwnd, nCmdShow);

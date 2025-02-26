@@ -10,7 +10,7 @@ struct RecoilPreset
 };
 RecoilPreset RecoilPresets[] =
 {
-    {3, 0}, {5, 0}, {12, 0}, {20, 0}
+    {2, 0}, {3, 0}, {4, 0}, {5, 0}
 };
 RecoilPreset CurrentRecoil = RecoilPresets[SelectedMode];
 bool Running = true;

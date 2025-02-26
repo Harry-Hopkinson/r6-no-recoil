@@ -77,13 +77,12 @@ void ApplyRecoil()
         {
             while (GetAsyncKeyState(VK_LBUTTON) & 0x8000) // Left Mouse Button (Firing)
             {
-                // Move mouse relative to its current position (faster than SetCursorPos)
                 mouse_event(MOUSEEVENTF_MOVE, CurrentRecoil.Horizontal * 2, CurrentRecoil.Vertical * 2, 0, 0);
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Faster update rate than 7ms
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
             }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Prevent CPU overuse
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
@@ -117,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             DispatchMessage(&msg);
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(16)); // 60 FPS
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 
     recoilThread.join();

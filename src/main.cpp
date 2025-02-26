@@ -20,13 +20,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 EnableRC = !EnableRC;
                 InvalidateRect(hwnd, NULL, TRUE); // Request repaint
             }
-            if (wParam == VK_DOWN)
+            if (wParam == VK_UP)
             {
                 SelectedMode = (SelectedMode + 1) % 4;
                 CurrentRecoil = RecoilPresets[SelectedMode];
                 InvalidateRect(hwnd, NULL, TRUE);
             }
-            if (wParam == VK_UP)
+            if (wParam == VK_DOWN)
             {
                 SelectedMode = (SelectedMode - 1 + 4) % 4;
                 CurrentRecoil = RecoilPresets[SelectedMode];

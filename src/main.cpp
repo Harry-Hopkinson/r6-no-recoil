@@ -69,25 +69,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// Function to apply recoil correction
 void ApplyRecoil()
 {
     while (Running)
     {
-        if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) // Right Mouse Button
+        if (EnableRC && (GetAsyncKeyState(VK_RBUTTON) & 0x8000)) // Right Mouse Button (ADS)
         {
-            if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) && EnableRC) // Left Mouse Button
+            while (GetAsyncKeyState(VK_LBUTTON) & 0x8000) // Left Mouse Button (Firing)
             {
-                for (int i = 0; i < 5; i++)
-                {
-                    POINT mousePos;
-                    GetCursorPos(&mousePos);
-                    SetCursorPos(mousePos.x + CurrentRecoil.Horizontal, mousePos.y + CurrentRecoil.Vertical);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(7));
-                }
+                // Move mouse relative to its current position (faster than SetCursorPos)
+                mouse_event(MOUSEEVENTF_MOVE, CurrentRecoil.Horizontal * 2, CurrentRecoil.Vertical * 2, 0, 0);
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Faster update rate than 7ms
             }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Prevent CPU overuse
     }
 }
 

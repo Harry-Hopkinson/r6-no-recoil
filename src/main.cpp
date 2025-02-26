@@ -14,19 +14,55 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             Running = false;
             PostQuitMessage(0);
             break;
+
         case WM_KEYDOWN:
-            if (wParam == VK_RETURN) EnableRC = !EnableRC;
+            if (wParam == VK_RETURN) {
+                EnableRC = !EnableRC;
+                InvalidateRect(hwnd, NULL, TRUE); // Request repaint
+            }
             if (wParam == VK_DOWN)
             {
                 SelectedMode = (SelectedMode + 1) % 4;
                 CurrentRecoil = RecoilPresets[SelectedMode];
+                InvalidateRect(hwnd, NULL, TRUE);
             }
             if (wParam == VK_UP)
             {
                 SelectedMode = (SelectedMode - 1 + 4) % 4;
                 CurrentRecoil = RecoilPresets[SelectedMode];
+                InvalidateRect(hwnd, NULL, TRUE);
             }
             break;
+
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+
+            // Create a black background
+            RECT rect;
+            GetClientRect(hwnd, &rect);
+            HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0)); // Black background
+            FillRect(hdc, &rect, hBrush);
+            DeleteObject(hBrush);
+
+            // Set text properties
+            SetTextColor(hdc, RGB(255, 255, 255)); // White text
+            SetBkMode(hdc, TRANSPARENT);
+
+            // Draw text
+            TextOut(hdc, 120, 20, "Recoil Control", 14);
+            TextOut(hdc, 50, 80, "Enable: ", 8);
+            TextOut(hdc, 130, 80, EnableRC ? "ON" : "OFF", EnableRC ? 2 : 3);
+            TextOut(hdc, 50, 130, "Mode:", 5);
+            TextOut(hdc, 120, 130, Modes[SelectedMode], strlen(Modes[SelectedMode]));
+            TextOut(hdc, 50, 200, "[ENTER] Toggle On/Off", 20);
+            TextOut(hdc, 50, 230, "[UP/DOWN] Change Mode", 21);
+
+            EndPaint(hwnd, &ps);
+        }
+        break;
+
         default:
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
@@ -62,6 +98,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = "NoRecoilWindow";
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1); // Background set in WM_PAINT
     RegisterClass(&wc);
 
     // Create Window
@@ -69,6 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (!hwnd) return 0;
 
     ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
 
     // Start recoil correction thread
     std::thread recoilThread(ApplyRecoil);
@@ -83,23 +121,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             DispatchMessage(&msg);
         }
 
-        // Draw text using GDI
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hwnd, &ps);
-        SetTextColor(hdc, RGB(255, 255, 255));
-        SetBkMode(hdc, TRANSPARENT);
-
-        TextOut(hdc, 120, 20, "Recoil Control", 14);
-        TextOut(hdc, 50, 80, "Enable: ", 8);
-        TextOut(hdc, 130, 80, EnableRC ? "ON" : "OFF", EnableRC ? 2 : 3);
-        TextOut(hdc, 50, 130, "Mode:", 5);
-        TextOut(hdc, 120, 130, Modes[SelectedMode], strlen(Modes[SelectedMode]));
-        TextOut(hdc, 50, 200, "[ENTER] Toggle On/Off", 20);
-        TextOut(hdc, 50, 230, "[UP/DOWN] Change Mode", 21);
-
-        EndPaint(hwnd, &ps);
-        InvalidateRect(hwnd, NULL, TRUE);
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        std::this_thread::sleep_for(std::chrono::milliseconds(16)); // 60 FPS
     }
 
     recoilThread.join();

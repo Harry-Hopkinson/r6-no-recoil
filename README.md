@@ -27,6 +27,7 @@ A lightweight, efficient **no-recoil tool** for Rainbow Six Siege. Designed for 
 
 ## ⚠️ Disclaimer
 This tool is for **educational purposes only**. Use it at your own risk. I do not advocate cheating.
+Windows defender may falsely flag this program as a virus. Just allow the app to run anyway. If you are unsure, use **Virus Total** to check the program.
 
 ---
 

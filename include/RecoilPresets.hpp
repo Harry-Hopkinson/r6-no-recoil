@@ -17,6 +17,8 @@ std::map<std::string, RecoilPreset> RecoilPresets =
     {"ULTRA", {20, 0}}
 };
 
+const char* Modes[] = {"LOW", "MEDIUM", "HIGH", "ULTRA"};
+
 bool EnableRC = true;
 bool RequireToggle = true;
 std::string RecoilControlMode = "MEDIUM";

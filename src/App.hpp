@@ -12,5 +12,4 @@ private:
     const int screenHeight = 300;
 
     int selectedMode = 1;
-    bool isActive;
 };

@@ -7,8 +7,6 @@ App::App()
 {
     InitWindow(screenWidth, screenHeight, "R6 No Recoil");
     SetTargetFPS(60);
-
-    isActive = EnableRC;
 }
 
 App::~App()
@@ -22,7 +20,7 @@ void App::Run()
     {
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
         {
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && isActive)
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && EnableRC)
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -37,13 +35,13 @@ void App::Run()
         ClearBackground(DARKGRAY);
             DrawText("Recoil Control", 120, 20, 20, RAYWHITE);
             DrawText("Enable: ", 50, 80, 20, RAYWHITE);
-            DrawText(isActive ? "ON" : "OFF", 130, 80, 20, isActive ? GREEN : RED);
+            DrawText(EnableRC ? "ON" : "OFF", 130, 80, 20, EnableRC ? GREEN : RED);
             DrawText("Mode:", 50, 130, 20, RAYWHITE);
             DrawText(Modes[selectedMode], 120, 130, 20, YELLOW);
 
             if (IsKeyPressed(KEY_ENTER))
             {
-                isActive = !isActive;
+                EnableRC = !EnableRC;
             }
             if (IsKeyPressed(KEY_DOWN))
             {

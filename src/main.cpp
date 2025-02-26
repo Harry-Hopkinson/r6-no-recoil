@@ -16,7 +16,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             break;
 
         case WM_KEYDOWN:
-            if (wParam == VK_RETURN) {
+            if (wParam == VK_RETURN)
+            {
                 EnableRC = !EnableRC;
                 InvalidateRect(hwnd, NULL, TRUE); // Request repaint
             }
@@ -34,44 +35,44 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             break;
 
-            case WM_PAINT:
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+
+            // Get window size
+            RECT rect;
+            GetClientRect(hwnd, &rect);
+            int centerX = rect.right / 2; // Center of the window
+
+            // Create a black background
+            HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+            FillRect(hdc, &rect, hBrush);
+            DeleteObject(hBrush);
+
+            // Set text properties
+            SetTextColor(hdc, RGB(255, 255, 255)); // White text
+            SetBkMode(hdc, TRANSPARENT);
+
+            auto DrawCenteredText = [&](LPCSTR text, int yOffset)
             {
-                PAINTSTRUCT ps;
-                HDC hdc = BeginPaint(hwnd, &ps);
+                SIZE textSize;
+                GetTextExtentPoint32(hdc, text, strlen(text), &textSize);
+                int textX = centerX - (textSize.cx / 2);
+                TextOut(hdc, textX, yOffset, text, strlen(text));
+            };
 
-                // Get window size
-                RECT rect;
-                GetClientRect(hwnd, &rect);
-                int centerX = rect.right / 2; // Center of the window
+            DrawCenteredText("Recoil Control", 20);
+            DrawCenteredText("Enable:", 80);
+            DrawCenteredText(EnableRC ? "ON" : "OFF", 100);
+            DrawCenteredText("Mode:", 130);
+            DrawCenteredText(Modes[SelectedMode], 150);
+            DrawCenteredText("[ENTER] Toggle On/Off", 200);
+            DrawCenteredText("[UP/DOWN] Change Mode", 230);
 
-                // Create a black background
-                HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
-                FillRect(hdc, &rect, hBrush);
-                DeleteObject(hBrush);
-
-                // Set text properties
-                SetTextColor(hdc, RGB(255, 255, 255)); // White text
-                SetBkMode(hdc, TRANSPARENT);
-
-                auto DrawCenteredText = [&](LPCSTR text, int yOffset)
-                {
-                    SIZE textSize;
-                    GetTextExtentPoint32(hdc, text, strlen(text), &textSize);
-                    int textX = centerX - (textSize.cx / 2);
-                    TextOut(hdc, textX, yOffset, text, strlen(text));
-                };
-
-                DrawCenteredText("Recoil Control", 20);
-                DrawCenteredText("Enable:", 80);
-                DrawCenteredText(EnableRC ? "ON" : "OFF", 100);
-                DrawCenteredText("Mode:", 130);
-                DrawCenteredText(Modes[SelectedMode], 150);
-                DrawCenteredText("[ENTER] Toggle On/Off", 200);
-                DrawCenteredText("[UP/DOWN] Change Mode", 230);
-
-                EndPaint(hwnd, &ps);
-            }
-            break;
+            EndPaint(hwnd, &ps);
+        }
+        break;
 
         default:
             return DefWindowProc(hwnd, uMsg, wParam, lParam);

@@ -5,15 +5,13 @@
 
 #include "../include/RecoilPresets.hpp"
 
-bool running = true;
-
 // Window Procedure for handling events
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
         case WM_CLOSE:
-            running = false;
+            Running = false;
             PostQuitMessage(0);
             break;
         case WM_KEYDOWN:
@@ -38,7 +36,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 // Function to apply recoil correction
 void ApplyRecoil()
 {
-    while (running)
+    while (Running)
     {
         if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) // Right Mouse Button
         {
@@ -77,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     // Message Loop
     MSG msg = {};
-    while (running)
+    while (Running)
     {
         while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {

@@ -27,13 +27,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 CurrentRecoil = RecoilPresets[SelectedMode];
                 InvalidateRect(hwnd, NULL, TRUE);
             }
+            else if (LOWORD(wParam) == 3) // Toggle Theme Button
+            {
+                ToggleTheme();
+                InvalidateRect(hwnd, NULL, TRUE);
+            }
             break;
 
         case WM_CREATE:
         {
             int centerX = (WINDOW_WIDTH - 150) / 2; // Center buttons horizontally
-            buttons.emplace_back(hwnd, centerX, 200, 150, 40, "Toggle Recoil", 1);
-            buttons.emplace_back(hwnd, centerX, 250, 150, 40, "Change Mode", 2);
+            Buttons.emplace_back(hwnd, centerX, 200, 150, 40, "Toggle Recoil", 1);
+            Buttons.emplace_back(hwnd, centerX, 250, 150, 40, "Change Mode", 2);
+            Buttons.emplace_back(hwnd, centerX, 300, 150, 40, "Toggle Theme", 3);
         }
         break;
 
@@ -42,17 +48,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd, &ps);
 
-            // Get window size
             RECT rect;
             GetClientRect(hwnd, &rect);
 
-            // Set background to black
-            HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+            // Set colors based on theme
+            COLORREF bgColor = DarkTheme ? RGB(0, 0, 0) : RGB(255, 255, 255);
+            COLORREF textColor = DarkTheme ? RGB(255, 255, 255) : RGB(0, 0, 0);
+
+            // Set background
+            HBRUSH hBrush = CreateSolidBrush(bgColor);
             FillRect(hdc, &rect, hBrush);
             DeleteObject(hBrush);
 
-            // Set text color to white
-            SetTextColor(hdc, RGB(255, 255, 255));
+            // Set text color
+            SetTextColor(hdc, textColor);
             SetBkMode(hdc, TRANSPARENT);
 
             // Draw centered text
@@ -98,7 +107,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     RegisterClass(&wc);
 
     // Create Window
-    HWND hwnd = CreateWindowEx(0, "NoRecoilWindow", "R6 No Recoil", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, WINDOW_WIDTH, WINDOW_HEIGHT, nullptr, nullptr, hInstance, nullptr);
+    HWND hwnd = CreateWindowEx(0, "NoRecoilWindow", "R6 No Recoil",
+        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
+        CW_USEDEFAULT, CW_USEDEFAULT, WINDOW_WIDTH, WINDOW_HEIGHT,
+        nullptr, nullptr, hInstance, nullptr);
+
     if (!hwnd) return 0;
 
     ShowWindow(hwnd, nCmdShow);

@@ -17,8 +17,6 @@ public:
             parent, (HMENU)(uintptr_t)id, GetModuleHandle(NULL), NULL);
     }
 
-    int GetID() const { return id; }
-
 private:
     HWND hwndButton;
     int id;

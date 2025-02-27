@@ -14,7 +14,7 @@ public:
             "BUTTON", text.c_str(),
             WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
             x, y, width, height,
-            parent, (HMENU)id, GetModuleHandle(NULL), NULL);
+            parent, (HMENU)(uintptr_t)id, GetModuleHandle(NULL), NULL);
     }
 
     int GetID() const { return id; }

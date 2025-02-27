@@ -1,3 +1,6 @@
+#ifndef RecoilPresets_HPP
+#define RecoilPresets_HPP
+
 bool EnableRC = true;
 const char* Modes[] = {"LOW", "MEDIUM", "HIGH", "ULTRA"};
 int SelectedMode = 1;
@@ -14,3 +17,5 @@ RecoilPreset RecoilPresets[] =
 };
 RecoilPreset CurrentRecoil = RecoilPresets[SelectedMode];
 bool Running = true;
+
+#endif

@@ -12,7 +12,6 @@ void DrawCenteredText(HDC hdc, LPCSTR text, int yOffset, int windowWidth)
     TextOut(hdc, textX, yOffset, text, strlen(text));
 }
 
-
 std::vector<Button> buttons;
 const int WINDOW_WIDTH = 400;
 const int WINDOW_HEIGHT = 350;

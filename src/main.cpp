@@ -5,15 +5,6 @@
 #include "../include/RecoilPresets.hpp"
 #include "../include/UI.hpp"
 
-// Function to center text
-void DrawCenteredText(HDC hdc, LPCSTR text, int yOffset, int windowWidth)
-{
-    SIZE textSize;
-    GetTextExtentPoint32(hdc, text, strlen(text), &textSize);
-    int textX = (windowWidth - textSize.cx) / 2;
-    TextOut(hdc, textX, yOffset, text, strlen(text));
-}
-
 // Window Procedure for handling events
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

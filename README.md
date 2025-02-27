@@ -18,12 +18,12 @@ A lightweight, efficient **no-recoil tool** for Rainbow Six Siege. Designed for 
 3. **Controls:**
    - **Press `Enter`** → Toggle the no-recoil effect on/off.
    - **Scroll Mouse Up/Down** → Adjust recoil compensation speed.
-4. **Enjoy Smoother Aim!** 🎯
+4. **Enjoy Smoother Aim!**
 
 ## 🚧 Currently in Development
-- **🖥️ Improved GUI** – A cleaner, more user-friendly interface is being developed.
-- **🎨 Customization Options** – Ability to fine-tune settings via a UI panel.
-- **⚙️ Config File Support** – Save and load user preferences.
+- **Improved GUI** – A cleaner, more user-friendly interface is being developed.
+- **Customization Options** – Ability to fine-tune settings via a UI panel.
+- **Config File Support** – Save and load user preferences.
 
 ## ⚠️ Disclaimer
 This tool is for **educational purposes only**. Use it at your own risk. I do not advocate cheating.
@@ -31,4 +31,4 @@ Windows defender may falsely flag this program as a virus. Just allow the app to
 
 ---
 
-💡 **Got questions?** Feel free to open an issue! 🚀
+**Got questions?** Feel free to open an issue!

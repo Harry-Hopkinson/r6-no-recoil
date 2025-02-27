@@ -75,6 +75,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+        case WM_KEYDOWN:
+        {
+            if (wParam == VK_ESCAPE)
+            {
+                PostMessage(hwnd, WM_CLOSE, 0, 0); // Close the window
+            }
+        }
+        break;
+
         default:
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }

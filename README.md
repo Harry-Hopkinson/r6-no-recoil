@@ -23,7 +23,6 @@ A lightweight, efficient **no-recoil tool** for Rainbow Six Siege. Designed for 
 ## 🚧 Currently in Development
 - **Improved GUI** – A cleaner, more user-friendly interface is being developed.
 - **Customization Options** – Ability to fine-tune settings via a UI panel.
-- **Config File Support** – Save and load user preferences.
 
 ## ⚠️ Disclaimer
 This tool is for **educational purposes only**. Use it at your own risk. I do not advocate cheating.

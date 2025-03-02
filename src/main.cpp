@@ -122,6 +122,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         config = toml::parse_file("Config.toml");
         EnableRC = config["RecoilPresets"]["Enabled"].value_or(true);
         DarkTheme = config["UI"]["DarkTheme"].value_or(true);
+        SelectedMode = config["RecoilPresets"]["Mode"].value_or(1);
+        SelectedMode = std::clamp(SelectedMode, 0, 3);
+        CurrentRecoil = RecoilPresets[SelectedMode];
     }
     catch (const toml::parse_error& err)
     {

@@ -116,9 +116,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.lpszClassName = "NoRecoilWindow";
     RegisterClass(&wc);
 
-    auto config = toml::parse_file( "Config.toml" );
-    EnableRC = config["RecoilPresets"]["Enabled"].value_or(true);
-    DarkTheme = config["UI"]["DarkTheme"].value_or(true);
+    toml::table config;
+    try
+    {
+        config = toml::parse_file("Config.toml");
+        EnableRC = config["RecoilPresets"]["Enabled"].value_or(true);
+        DarkTheme = config["UI"]["DarkTheme"].value_or(true);
+    }
+    catch (const toml::parse_error& err)
+    {
+        EnableRC = true;
+        DarkTheme = true;
+    }
 
     // Create Window
     HWND hwnd = CreateWindowEx(0, "NoRecoilWindow", "R6 No Recoil",

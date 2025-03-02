@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "../include/RecoilPresets.hpp"
+#include "../include/Toml.hpp"
 #include "../include/UI.hpp"
 
 // Window Procedure for handling events

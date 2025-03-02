@@ -6,34 +6,63 @@
 #include "../include/Toml.hpp"
 #include "../include/UI.hpp"
 
+void SaveConfig()
+{
+    try
+    {
+        std::ofstream configFile("Config.toml");
+        if (!configFile.is_open())
+            return;
+
+        configFile << "[RecoilPresets]\n";
+        configFile << "# 0 = Low, 1 = Medium, 2 = High, 3 = Custom\n";
+        configFile << "Mode = " << SelectedMode << "\n";
+        configFile << "Enabled = " << (EnableRC ? "true" : "false") << "\n";
+        configFile << "Vertical = " << CurrentRecoil.Vertical << "\n\n";
+
+        configFile << "[UI]\n";
+        configFile << "DarkTheme = " << (DarkTheme ? "true" : "false") << "\n";
+
+        configFile.close();
+    }
+    catch (const std::exception& err) {}
+}
+
 // Window Procedure for handling events
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
         case WM_CLOSE:
+        {
             Running = false;
             PostQuitMessage(0);
-            break;
+        }
+        break;
 
         case WM_COMMAND:
+        {
             if (LOWORD(wParam) == 1) // Toggle Recoil Button
             {
                 EnableRC = !EnableRC;
+                SaveConfig();
                 InvalidateRect(hwnd, NULL, TRUE);
             }
             else if (LOWORD(wParam) == 2) // Change Mode Button
             {
                 SelectedMode = (SelectedMode + 1) % 4;
                 CurrentRecoil = RecoilPresets[SelectedMode];
+                SaveConfig();
                 InvalidateRect(hwnd, NULL, TRUE);
             }
             else if (LOWORD(wParam) == 3) // Toggle Theme Button
             {
                 ToggleTheme();
+                SaveConfig();
                 InvalidateRect(hwnd, NULL, TRUE);
             }
-            break;
+        }
+        break;
 
         case WM_CREATE:
         {
@@ -120,11 +149,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     try
     {
         config = toml::parse_file("Config.toml");
+
         EnableRC = config["RecoilPresets"]["Enabled"].value_or(true);
         DarkTheme = config["UI"]["DarkTheme"].value_or(true);
         SelectedMode = config["RecoilPresets"]["Mode"].value_or(1);
         SelectedMode = std::clamp(SelectedMode, 0, 3);
-        CurrentRecoil = RecoilPresets[SelectedMode];
+        CurrentRecoil.Vertical = config["RecoilPresets"]["Vertical"].value_or(RecoilPresets[SelectedMode].Vertical);
     }
     catch (const toml::parse_error& err)
     {

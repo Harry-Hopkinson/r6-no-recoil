@@ -1,6 +1,8 @@
 [RecoilPresets]
+# 0 = Low, 1 = Medium, 2 = High, 3 = Custom
+Mode = 1
 Enabled = true
-Mode = 1 # 0 = "LOW", 1 = "MEDIUM", 2 = "HIGH", 3 = "ULTRA"
+Vertical = 3
 
 [UI]
 DarkTheme = true

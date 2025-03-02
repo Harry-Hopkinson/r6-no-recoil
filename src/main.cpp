@@ -116,6 +116,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.lpszClassName = "NoRecoilWindow";
     RegisterClass(&wc);
 
+    auto config = toml::parse_file( "Config.toml" );
+    EnableRC = config["RecoilPresets"]["Enabled"].value_or(true);
+    DarkTheme = config["UI"]["DarkTheme"].value_or(true);
+
     // Create Window
     HWND hwnd = CreateWindowEx(0, "NoRecoilWindow", "R6 No Recoil",
         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,

@@ -1,7 +1,7 @@
 #ifndef RecoilPresets_HPP
 #define RecoilPresets_HPP
 
-bool EnableRC = true;
+bool EnableRC;
 const char* Modes[] = {"LOW", "MEDIUM", "HIGH", "ULTRA"};
 int SelectedMode = 1;
 

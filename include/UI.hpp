@@ -16,7 +16,7 @@ std::vector<Button> Buttons;
 const int WINDOW_WIDTH = 400;
 const int WINDOW_HEIGHT = 400;
 
-bool DarkTheme = true;
+bool DarkTheme;
 
 void ToggleTheme()
 {
